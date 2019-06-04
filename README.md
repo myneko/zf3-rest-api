@@ -27,7 +27,7 @@ return [
 ```
 
 ## Usage
-You just need to create your API related controller and extend it to `ApiController` instead of default `AbstractActionController`.  You just need to set you results in `apiResponse` variable and your response code in `httpStatusCode` variable and return $this->createResponse(). For example,
+You just need to create your API related controller and extend it to `ApiController` instead of default `AbstractActionController`.  You just need to return your results with $this->createResponse($apiResponse). For example,
 ```php
 namespace Application\Controller;
 
@@ -45,15 +45,12 @@ class FooController extends ApiController
      */
     public function barAction()
     {
-        // your action logic
+        // Generate your response
+        $response[
+            'you_response' => 'your response data';
+        ];
 
-        // Set the HTTP status code. By default, it is set to 200
-        $this->httpStatusCode = 200;
-
-        // Set the response
-        $this->apiResponse['you_response'] = 'your response data';
-
-        return $this->createResponse();
+        return $this->createResponse($response);
     }
 }
 ```
@@ -73,7 +70,7 @@ The URL for above example will be `http://yourdomain.com/foo/bar`. You can custo
                     'defaults' => [
                         'controller' => Controller\FooController::class,
                         'action' => 'bar',
-                        'isAuthorizationRequired' => true // set true if this api Required JWT Authorization.
+                        'access_public' => true // set true if this api NOT Required JWT Authorization eg. login.
                     ],
                 ],
             ],
@@ -83,52 +80,23 @@ The URL for above example will be `http://yourdomain.com/foo/bar`. You can custo
 Simple :)
 
 ## Configurations
-This module provides several configurations related to Response, Request and `JWT` authentication. The default configurations are in previously you copy and past file this restapi.global.php have configurations`.
+This module provides several configurations related to `JWT` authentication. The default configurations are in previously you copy and past file this restapi.global.php have configurations`.
 ```php
 <?php
 
 return [
     'ApiRequest' => [
-        'responseFormat' => [
-            'statusKey' => 'status',
-            'statusOkText' => 'OK',
-            'statusNokText' => 'NOK',
-            'resultKey' => 'result',
-            'messageKey' => 'message',
-            'defaultMessageText' => 'Empty response!',
-            'errorKey' => 'error',
-            'defaultErrorText' => 'Unknown request!',
-            'authenticationRequireText' => 'Authentication Required.',
-            'pageNotFoundKey' => 'Request Not Found.',
-        ],
         'jwtAuth' => [
             'cypherKey' => 'R1a#2%dY2fX@3g8r5&s4Kf6*sd(5dHs!5gD4s',
-            'tokenAlgorithm' => 'HS256'
+            'tokenAlgorithm' => 'HS256',
+            'expireTime' => 300
         ],
     ]
 ];
 ```
 ### Request authentication using JWT
-You can check for a presence of auth token in API request. You need to define a flag `isAuthorizationRequired` to `true` or `false`. For example,
-```php
-'router' => [
-        'routes' => [
-            'home' => [
-                'type' => Literal::class,
-                'options' => [
-                    'route'    => '/',
-                    'defaults' => [
-                        'controller' => Controller\FooController::class,
-                        'action'     => 'bar',
-                        'isAuthorizationRequired' => true // set true if this api Required JWT Authorization.
-                    ],
-                ],
-            ],
-        ],
-    ],
-```
 
-Above API method will require an auth token in a request. You can pass the auth token in either header, in GET parameter or in POST field.
+By default any API method will require an auth token in a request. You can pass the auth token in either header, in GET parameter or in POST field.
 
 If you want to pass token in a header, use below format.
 ```php

@@ -7,7 +7,7 @@ use Zend\Mvc\MvcEvent;
 class Module
 {
 
-    const VERSION = '3.0.3-dev';
+    const VERSION = '3.0.4-dev';
 
     public function getConfig()
     {

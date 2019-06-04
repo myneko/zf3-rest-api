@@ -27,12 +27,18 @@ return [
     ],
     'controllers' => [
         'factories' => [
+            Controller\AuthController::class => Factory\AuthControllerFactory::class,
             Controller\RouteNotFoundController::class => InvokableFactory::class,
         ],
     ],
-    'view_manager' => [
-        'strategies' => array(
-            'ViewJsonStrategy',
-        ),
+    'service_manager' => [
+        'factories' => [
+            Authentication\Adapter\JWT::class => Factory\JWTFactory::class,
+        ]
     ],
+    'view_manager' => [
+        'strategies' => [
+            'ViewJsonStrategy'
+        ]
+    ]
 ];

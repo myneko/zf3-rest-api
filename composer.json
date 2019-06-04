@@ -23,11 +23,15 @@
         "zf3",
         "zend framework",
         "cors",
+        "jwt",
         "rest",
         "rest api"
     ],
     "require": {
+        "ext-json": "*",
         "firebase/php-jwt": "^4.0",
+        "zendframework/zend-authentication": "^2.5",
+        "zendframework/zend-mvc": "^3.0",
         "zendframework/zend-json": "^3.0"
     },
     "autoload": {
